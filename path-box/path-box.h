@@ -3,8 +3,11 @@
 
 int sl = 0;							//当前的工具数量
 int gjsx = 21;						//工具数量的上限（修改工具上限时，需要修改两个地方，另一个是数组的元素个数）（工具集的最大上限为21个）
-string sjbc_lj = "paths.txt";		//数据保存_路径
-string lssj_lj = "temp.txt";		//临时数据_路径
+string sjbc_lj = "temp/data/paths.txt";		//数据保存_路径
+string lssj_lj = "temp/logs/temp.txt";		//临时数据_路径
+namespace fs = std::filesystem;			//将fs设置为命名空间filesystem
+string lssj_ml = "temp/data";			//临时数据目录
+string lssj_ml2 = "temp/logs";			//临时数据目录2
 
 class gjl								//工具类
 {

@@ -1,8 +1,9 @@
+#include<Windows.h>
 #include<iostream>
 using namespace std;
 #include<fstream>
 #include<string>
-#include<Windows.h>
+#include <filesystem>
 
 class gjl;										//工具类
 int gjcsh(gjl* gj);								//工具集的初始化
@@ -34,6 +35,10 @@ void scnr();										//输出内容（减少代码长度用的，输出一些内容）
 
 int main()
 {
+	//在当前目录下，创建一个临时数据目录，如果目录存在会自动跳过
+	fs::create_directories(lssj_ml);
+	fs::create_directories(lssj_ml2);
+
 	string temp;
 	bool pd = false;
 	int xz = 0;
