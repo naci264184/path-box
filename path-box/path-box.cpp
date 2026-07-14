@@ -23,6 +23,9 @@ void sc();										//删除
 void bc();
 int xzgj(string& ts, int& sr, int ms, int sr2);		//选择工具
 void scnr();										//输出内容（减少代码长度用的，输出一些内容）
+void hq_dqml();										//获取_程序的当前目录（当在路径箱里打开新路径箱时，当前目录也需要更新一下）
+bool pd_sfwljx(string temp_gjm);					//判断打开的文件是否为一个新的路径箱
+
 #include"path-box.h"
 
 
@@ -35,10 +38,19 @@ void scnr();										//输出内容（减少代码长度用的，输出一些内容）
 
 int main()
 {
-	//在当前目录下，创建一个临时数据目录，如果目录存在会自动跳过
+	//1.在当前目录下，创建一个临时数据目录，如果目录存在会自动跳过
 	fs::create_directories(lssj_ml);
 	fs::create_directories(lssj_ml2);
 
+	//2.更新数据保存位置的绝对路径（防止打开的文件是新路径箱时，数据保存位置用的却还是旧路径箱的）
+	hq_dqml();
+	sjbc_lj = dq_ml + "\\" + sjbc_lj;
+	y_sjlj = sjbc_lj;
+	//cout << "已将数据保存位置的路径修改为绝对路径：" << sjbc_lj << endl;
+	//system("pause");
+
+
+	//3.工具集内容
 	string temp;
 	bool pd = false;
 	int xz = 0;
@@ -69,9 +81,21 @@ int main()
 
 			if (temp == "0")					//如果输入内容为0，则退出程序
 			{
-				cout << "欢迎下次使用" << endl;
-				system("pause");
-				return 0;
+				//（1）如果当前的"temp\\data\\paths.txt"文件不为最初的"temp\\data\\paths.txt"，则返回为最初的路径箱
+				if (sjbc_lj != y_sjlj)
+				{
+					sjbc_lj = y_sjlj;			//则回退到最初版本（回退到最初的路径箱）
+					sl = gjcsh(gj);
+
+					continue;
+				}
+				//（2）否则，退出程序
+				else
+				{
+					cout << "欢迎下次使用" << endl;
+					system("pause");
+					return 0;
+				}				
 			}
 			else if (temp == "00")				//如果输入内容为00，则进入功能界面
 			{
@@ -88,7 +112,18 @@ int main()
 					system("cls");				//清屏
 
 					//MessageBoxW(NULL, L"请在2秒内切换到目标应用程序（如记事本）", L"提示", MB_OK);			//创建一个提示窗口（用于音乐）
-					system(gj[xz - 1].lj);		//则打开对应工具
+
+					//1.如果新打开的文件中，拥有一个新的，跟原来不同的"temp\\data\\paths.txt"路径，则效果为切换“路径数据”
+					if (pd_sfwljx(gj[xz - 1].lj))
+					{
+
+					}
+					//2.否则，打开对应文件
+					else
+					{						
+						system(gj[xz - 1].lj);		//打开对应工具
+					}
+					
 
 					//system("pause");
 					continue;

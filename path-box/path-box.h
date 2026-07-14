@@ -3,11 +3,17 @@
 
 int sl = 0;							//当前的工具数量
 int gjsx = 21;						//工具数量的上限（修改工具上限时，需要修改两个地方，另一个是数组的元素个数）（工具集的最大上限为21个）
-string sjbc_lj = "temp/data/paths.txt";		//数据保存_路径
+string sjbc_lj = "temp\\data\\paths.txt";	//数据保存_路径（后续要加上当前目录，将相对路径修改为绝对路径，所以这里的分隔符建议用Windows原生路径分隔符'\'）
 string lssj_lj = "temp/logs/temp.txt";		//临时数据_路径
 namespace fs = std::filesystem;			//将fs设置为命名空间filesystem
 string lssj_ml = "temp/data";			//临时数据目录
 string lssj_ml2 = "temp/logs";			//临时数据目录2
+
+string dq_ml = "";						//记录当前工作目录的完整路径
+string ljx_mc = "path-box.exe";			//路径箱的名称
+string sjbc_xdlj = "temp\\data\\paths.txt";	//数据保存_相对路径
+string y_sjlj = "";						//记录最初的"temp\\data\\paths.txt"文件的绝对路径
+
 
 class gjl								//工具类
 {
@@ -131,7 +137,7 @@ void scwj(char* lj)								//传入一个路径
 bool pdlj(string lj)							//判断文件（路径）是否可以打开
 {
 	ifstream ifs;
-	ifs.open(lj, ios::in || ios::binary);
+	ifs.open(lj, ios::in | ios::binary);
 	if (ifs.is_open())							//如果打开成功
 	{
 		ifs.close();
@@ -247,6 +253,26 @@ void csh()							//初始化
 		if (pdlj(temp))				//判断路径是否可以打开
 		{
 			break;
+		}
+
+		//如果输入内容为0
+		if (temp == "0")
+		{
+			//（1）如果当前的"temp\\data\\paths.txt"文件不为最初的"temp\\data\\paths.txt"，则返回为最初的路径箱
+			if (sjbc_lj != y_sjlj)
+			{
+				sjbc_lj = y_sjlj;			//则回退到最初版本（回退到最初的路径箱）
+				sl = gjcsh(gj);
+
+				return;
+			}
+			//（2）否则，退出程序
+			else
+			{
+				cout << "欢迎下次使用" << endl;
+				system("pause");
+				exit(0);
+			}
 		}
 
 		cout << "没有该路径" << endl;
@@ -685,4 +711,49 @@ void scnr()										//输出内容（减少代码长度用的，输出一些内容）
 	Sleep(2000);
 	system("pause");
 	system("cls");
+}
+
+
+void hq_dqml()					//获取_程序的当前目录
+{
+	char buffer[MAX_PATH];
+
+	if (GetCurrentDirectoryA(MAX_PATH, buffer) != 0)
+	{
+		dq_ml = buffer;
+	}
+	else
+	{
+		dq_ml = "";
+	}
+}
+bool pd_sfwljx(string temp_lj)					//判断打开的文件是否为一个新的路径箱
+{
+	//1.创建变量
+	string gz_ml;					//工作目录
+	string paths_lj;				//当前工作目录下，"temp\\data\\paths.txt"文件的绝对路径
+	int wz = 0;
+
+	//2.获取该工具的工作目录
+	wz = temp_lj.rfind("\\");					//记录路径中最后一个斜杆的位置
+	gz_ml = temp_lj.substr(1, wz);				//获取0到斜杆之间的字符（该工具的工作目录）
+
+	//3.获取对应要查找的路径
+	paths_lj = gz_ml + sjbc_xdlj;
+
+	//4.判断该工具的工具目录内，是否拥有"temp\\data\\paths.txt"文件
+	if (pdlj(paths_lj) && paths_lj != sjbc_lj)	//如果该文件能打开，说明该工具内部，确实有这么一个"temp\\data\\paths.txt"文件
+	{											//且该"temp\\data\\paths.txt"文件的绝对路径，和旧版不同
+		//5.更新数据保存位置的路径
+		sjbc_lj = paths_lj;
+		sl = gjcsh(gj);
+
+		//cout << "已更新数据保存位置的路径：" << sjbc_lj << endl;		
+		//system("pause");
+
+		return true;
+	}
+
+
+	return false;
 }
